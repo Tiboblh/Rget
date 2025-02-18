@@ -87,8 +87,6 @@
 
             let randomIndex = Math.floor(Math.random() * sites.length);
             let randomSite = sites[randomIndex];
-            console.log(randomSite);
-            sites.splice(randomIndex, 1); // Remove used URL from list
 
             let win = window.open(randomSite, "offerWindow", "width=800,height=600");
 
@@ -110,6 +108,7 @@
                     document.getElementById("offerStatus").textContent = "Offer Successful!";
                     offerCount++;
                     document.getElementById("offerCount").textContent = offerCount;
+                    sites.splice(randomIndex, 1); // Remove used URL from list
                     if (offerCount >= maxOffers) {
                         document.getElementById("startOffer").disabled = true;
                         document.getElementById("doneBtn").disabled = false;
