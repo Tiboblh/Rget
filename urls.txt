@@ -1,5 +1,4 @@
 github.com.html
 itch.io.html
 example.org.html
-google.com.html
 tiboblh.github.io-Tiboblh.html
