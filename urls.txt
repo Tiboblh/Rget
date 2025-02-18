@@ -1,0 +1,4 @@
+example.com
+itch.io
+example.org
+chatgpt.com
