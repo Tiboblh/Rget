@@ -1,4 +1,4 @@
-https://example.com
-https://itch.io
-https://example.org
-https://chatgpt.com
+example.com
+itch.io
+example.org
+chatgpt.com
