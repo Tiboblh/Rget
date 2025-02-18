@@ -1,4 +1,4 @@
-example.com
-itch.io
-example.org
-chatgpt.com
+example.com.html
+itch.io.html
+example.org.html
+chatgpt.com.html
