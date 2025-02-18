@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Récompense</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f8f8f8;
+        }
+        .container {
+            margin: 20px auto;
+            width: 90%;
+            max-width: 400px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .reward {
+            font-size: 20px;
+            font-weight: bold;
+            background: #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 20px 0;
+            position: relative;
+        }
+        .lock {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+        }
+        .steps {
+            text-align: left;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        button {
+            background: #d63384;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        button:disabled {
+            background: #aaa;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>20$ GIFT CARD</h2>
+        <div class="reward">
+            <span id="rewardText">WORKS_HERE</span>
+            <span class="lock">🔒</span>
+        </div>
+        <p>Offres complétées : <span id="offerCount">0</span>/4</p>
+        <button id="startOffer">Commencer une offre</button>
+        <button id="doneBtn" disabled>Done</button>
+        <p id="offerStatus"></p>
+    </div>
+
+    <script>
+        let offerCount = 0;
+        const maxOffers = 4;
+        const sites = [
+            "https://example.com",
+            "https://example.org",
+            "https://example.net"
+        ];
+
+        document.getElementById("startOffer").addEventListener("click", function() {
+            if (offerCount >= maxOffers) return;
+
+            let randomSite = sites[Math.floor(Math.random() * sites.length)];
+            let win = window.open(randomSite, "offerWindow", "width=800,height=600");
+
+            if (!win) {
+                alert("Autorisez les pop-ups pour participer.");
+                return;
+            }
+
+            let timer = setTimeout(() => {
+                if (!win.closed) {
+                    win.close();
+                    offerCount++;
+                    document.getElementById("offerCount").textContent = offerCount;
+                    document.getElementById("offerStatus").textContent = "Offer Successful!";
+                    
+                    if (offerCount >= maxOffers) {
+                        document.getElementById("startOffer").disabled = true;
+                        document.getElementById("doneBtn").disabled = false;
+                    }
+                }
+            }, 30000);
+
+            let checkClosed = setInterval(() => {
+                if (win.closed) {
+                    clearTimeout(timer);
+                    clearInterval(checkClosed);
+                    document.getElementById("offerStatus").textContent = "Offer Failed!";
+                }
+            }, 500);
+        });
+
+        document.getElementById("doneBtn").addEventListener("click", function() {
+            alert("Bravo ! Récompense débloquée !");
+            document.getElementById("rewardText").textContent = "WORKS_HERE";
+        });
+    </script>
+
+</body>
+</html>
