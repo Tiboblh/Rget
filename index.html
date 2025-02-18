@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Récompense</title>
+    <title>Reward</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -27,6 +27,11 @@
             border-radius: 5px;
             margin: 20px 0;
             position: relative;
+            filter: blur(5px);
+            transition: filter 0.3s;
+        }
+        .reward.unlocked {
+            filter: blur(0);
         }
         .lock {
             position: absolute;
@@ -34,11 +39,6 @@
             top: 50%;
             transform: translate(-50%, -50%);
             font-size: 24px;
-        }
-        .steps {
-            text-align: left;
-            font-size: 14px;
-            margin-bottom: 10px;
         }
         button {
             background: #d63384;
@@ -59,13 +59,13 @@
 <body>
 
     <div class="container">
-        <h2>20$ GIFT CARD</h2>
-        <div class="reward">
+        <h2>$20 GIFT CARD</h2>
+        <div class="reward" id="rewardBox">
             <span id="rewardText">WORKS_HERE</span>
-            <span class="lock">🔒</span>
+            <span class="lock" id="lockIcon">🔒</span>
         </div>
-        <p>Offres complétées : <span id="offerCount">0</span>/4</p>
-        <button id="startOffer">Commencer une offre</button>
+        <p>Offers completed: <span id="offerCount">0</span>/4</p>
+        <button id="startOffer">Start an offer</button>
         <button id="doneBtn" disabled>Done</button>
         <p id="offerStatus"></p>
     </div>
@@ -73,51 +73,55 @@
     <script>
         let offerCount = 0;
         const maxOffers = 4;
-        const sites = [
-            "https://example.com",
-            "https://example.org",
-            "https://example.net"
-        ];
+        let sites = [];
+
+        // Load URLs from urls.txt
+        fetch("urls.txt")
+            .then(response => response.text())
+            .then(data => {
+                sites = data.trim().split("\n").filter(url => url);
+            });
 
         document.getElementById("startOffer").addEventListener("click", function() {
-            if (offerCount >= maxOffers) return;
+            if (offerCount >= maxOffers || sites.length === 0) return;
 
-            let randomSite = sites[Math.floor(Math.random() * sites.length)];
+            let randomIndex = Math.floor(Math.random() * sites.length);
+            let randomSite = sites[randomIndex];
+            sites.splice(randomIndex, 1); // Remove used URL from list
+
             let win = window.open(randomSite, "offerWindow", "width=800,height=600");
 
             if (!win) {
-                alert("Autorisez les pop-ups pour participer.");
+                alert("Allow pop-ups to participate.");
                 return;
             }
 
-            let timer = setTimeout(() => {
-                if (!win.closed) {
-                    win.close();
-                    offerCount++;
-                    document.getElementById("offerCount").textContent = offerCount;
-                    setTimeout(function() {
-                        document.getElementById("offerStatus").textContent = "Offer Successful!";
-                    }, 100); // 5000 millisecondes = 5 secondes
-                    
-                    if (offerCount >= maxOffers) {
-                        document.getElementById("startOffer").disabled = true;
-                        document.getElementById("doneBtn").disabled = false;
-                    }
-                }
-            }, 30000);
-
             let checkClosed = setInterval(() => {
                 if (win.closed) {
-                    clearTimeout(timer);
                     clearInterval(checkClosed);
                     document.getElementById("offerStatus").textContent = "Offer Failed!";
                 }
             }, 500);
+
+            let timer = setTimeout(() => {
+                clearInterval(checkClosed);
+                if (!win.closed) {
+                    document.getElementById("offerStatus").textContent = "Offer Successful!";
+                    offerCount++;
+                    document.getElementById("offerCount").textContent = offerCount;
+                    if (offerCount >= maxOffers) {
+                        document.getElementById("startOffer").disabled = true;
+                        document.getElementById("doneBtn").disabled = false;
+                    }
+                    win.close();
+                }
+            }, 30000);
         });
 
         document.getElementById("doneBtn").addEventListener("click", function() {
-            alert("Bravo ! Récompense débloquée !");
-            document.getElementById("rewardText").textContent = "WORKS_HERE";
+            alert("Congratulations! Reward unlocked!");
+            document.getElementById("rewardBox").classList.add("unlocked");
+            document.getElementById("lockIcon").remove();
         });
     </script>
 
