@@ -95,7 +95,9 @@
                     win.close();
                     offerCount++;
                     document.getElementById("offerCount").textContent = offerCount;
-                    document.getElementById("offerStatus").textContent = "Offer Successful!";
+                    setTimeout(function() {
+                        document.getElementById("offerStatus").textContent = "Offer Successful!";
+                    }, 1000); // 5000 millisecondes = 5 secondes
                     
                     if (offerCount >= maxOffers) {
                         document.getElementById("startOffer").disabled = true;
