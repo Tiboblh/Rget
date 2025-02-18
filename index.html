@@ -87,6 +87,7 @@
 
             let randomIndex = Math.floor(Math.random() * sites.length);
             let randomSite = sites[randomIndex];
+            console.log(randomSite);
             sites.splice(randomIndex, 1); // Remove used URL from list
 
             let win = window.open(randomSite, "offerWindow", "width=800,height=600");
