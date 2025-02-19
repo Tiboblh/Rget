@@ -133,11 +133,14 @@
         document.getElementById("doneBtn").addEventListener("click", function() {
             if (rewards.length > 0) {
                 document.getElementById("rewardText").textContent = rewards.shift(); // Get first reward
+                document.getElementById("doneBtn").disabled = true;
             } else {
                 document.getElementById("rewardText").textContent = "NO REWARD AVAILABLE";
+                document.getElementById("doneBtn").disabled = true;
             }
             document.getElementById("rewardBox").classList.add("unlocked");
             document.getElementById("lockIcon").remove();
+            document.getElementById("doneBtn").disabled = true;
         });
     </script>
 
