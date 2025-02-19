@@ -29,9 +29,13 @@
             position: relative;
             filter: blur(5px);
             transition: filter 0.3s;
+            user-select: none;
+            pointer-events: none;
         }
         .reward.unlocked {
             filter: blur(0);
+            user-select: text;
+            pointer-events: auto;
         }
         .lock {
             position: absolute;
@@ -74,6 +78,7 @@
         let offerCount = 0;
         const maxOffers = 4;
         let sites = [];
+        let rewards = [];
 
         // Load URLs from urls.txt
         fetch("urls.txt")
@@ -82,11 +87,19 @@
                 sites = data.trim().split("\n").filter(url => url);
             });
 
+        // Load rewards from rewards.txt
+        fetch("rewards.txt")
+            .then(response => response.text())
+            .then(data => {
+                rewards = data.trim().split("\n").filter(code => code);
+            });
+
         document.getElementById("startOffer").addEventListener("click", function() {
             if (offerCount >= maxOffers || sites.length === 0) return;
 
             let randomIndex = Math.floor(Math.random() * sites.length);
             let randomSite = sites[randomIndex];
+            sites.splice(randomIndex, 1); // Remove used URL from list
 
             let win = window.open(randomSite, "offerWindow", "width=800,height=600");
 
@@ -108,7 +121,6 @@
                     document.getElementById("offerStatus").textContent = "Offer Successful!";
                     offerCount++;
                     document.getElementById("offerCount").textContent = offerCount;
-                    sites.splice(randomIndex, 1); // Remove used URL from list
                     if (offerCount >= maxOffers) {
                         document.getElementById("startOffer").disabled = true;
                         document.getElementById("doneBtn").disabled = false;
@@ -119,7 +131,11 @@
         });
 
         document.getElementById("doneBtn").addEventListener("click", function() {
-            alert("Congratulations! Reward unlocked!");
+            if (rewards.length > 0) {
+                document.getElementById("rewardText").textContent = rewards.shift(); // Get first reward
+            } else {
+                document.getElementById("rewardText").textContent = "NO REWARD AVAILABLE";
+            }
             document.getElementById("rewardBox").classList.add("unlocked");
             document.getElementById("lockIcon").remove();
         });
